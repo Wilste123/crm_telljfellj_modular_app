@@ -402,7 +402,7 @@ def apply_style():
             box-shadow: 0 12px 28px rgba(16,185,129,0.24);
         }
 
-        .tf-logo-image {
+        .felt-logo-image {
             width: 44px;
             height: 44px;
             border-radius: 17px;

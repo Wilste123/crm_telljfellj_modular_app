@@ -58,7 +58,7 @@ def inject_css():
             font-size: 1.5rem;
             font-weight: 900;
         }
-        .tf-logo-image {
+        .felt-logo-image {
             width: 56px;
             height: 56px;
             border-radius: 18px;
@@ -275,7 +275,7 @@ def render_sidebar(user):
     user_email = user.get("email", "") if isinstance(user, dict) else ""
     logo_src = asset_data_uri(SQUARE_LOGO_PATH)
     logo_markup = (
-        f'<img class="tf-logo-image" src="{logo_src}" alt="FELT logo" />'
+        f'<img class="felt-logo-image" src="{logo_src}" alt="FELT logo" />'
         if logo_src
         else '<div class="tf-logo">TF</div>'
     )
