@@ -34,7 +34,7 @@ def generate_public_token() -> str:
 
 
 def get_app_public_url() -> str:
-    return st.secrets.get("APP_PUBLIC_URL", "http://localhost:8501").rstrip("/")
+    return st.secrets.get("APP_PUBLIC_URL", "https://feltcrm.streamlit.app").rstrip("/")
 
 
 def build_accept_link(public_token: str) -> str:
