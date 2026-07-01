@@ -1,6 +1,7 @@
 import streamlit as st
 
 from crm.data import clear_all_caches
+from crm.ui.layout import section_title, divider
 
 
 def fetch_quote_terms(ctx):
@@ -22,7 +23,7 @@ def fetch_quote_terms(ctx):
 
 
 def render_quote_terms_settings(ctx):
-    st.markdown("### Standard tilbudsvilkår")
+    st.markdown("### 📋 Standard tilbudsvilkår")
 
     terms = fetch_quote_terms(ctx)
 
@@ -48,7 +49,7 @@ def render_quote_terms_settings(ctx):
             height=260,
         )
 
-        submitted = st.form_submit_button("Lagre vilkår", type="primary")
+        submitted = st.form_submit_button("💾 Lagre vilkår", use_container_width=True, type="primary")
 
         if submitted:
             if not terms_text.strip():
@@ -61,7 +62,7 @@ def render_quote_terms_settings(ctx):
                     "terms_text": terms_text.strip(),
                 }).eq("id", terms_id).execute()
 
-                st.success("Standardvilkår oppdatert.")
+                st.success("✅ Standardvilkår oppdatert.")
             else:
                 ctx.client.table("quote_terms").insert({
                     "company_id": ctx.company_id,
@@ -70,31 +71,14 @@ def render_quote_terms_settings(ctx):
                     "is_default": True,
                 }).execute()
 
-                st.success("Standardvilkår opprettet.")
+                st.success("✅ Standardvilkår opprettet.")
 
             clear_all_caches()
             st.rerun()
 
 
-def render(ctx):
-    st.markdown("## Innstillinger")
-
-    tab_terms, tab_notifications = st.tabs(
-        [
-            "Tilbudsvilkår",
-            "Varsler",
-        ]
-    )
-
-    with tab_terms:
-        render_quote_terms_settings(ctx)
-
-    with tab_notifications:
-        render_notifications_settings(ctx)
-
-
 def render_notifications_settings(ctx):
-    st.markdown("### Varsler")
+    st.markdown("### 🔔 Varsler")
 
     st.info(
         "Nivå 1-varsler vises foreløpig inne i appen. "
@@ -106,3 +90,20 @@ def render_notifications_settings(ctx):
         Foreløpig varsles aksepterte tilbud på Dashboard og i Salg/Tilbud.
         """
     )
+
+
+def render(ctx):
+    section_title("Innstillinger", "Administrasjon og konfigurasjon")
+
+    tab_terms, tab_notifications = st.tabs(
+        [
+            "⚙️ Tilbudsvilkår",
+            "🔔 Varsler",
+        ]
+    )
+
+    with tab_terms:
+        render_quote_terms_settings(ctx)
+
+    with tab_notifications:
+        render_notifications_settings(ctx)
