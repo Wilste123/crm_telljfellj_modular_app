@@ -19,7 +19,7 @@ def render_sidebar(
                 <div class="tf-logo">TF</div>
                 <div>
                     <div class="tf-brand-title">Telljfellj CRM</div>
-                    <div class="tf-brand-sub">Modulær bedriftsapp</div>
+                    <div class="tf-brand-sub">Modular bedriftsapp</div>
                 </div>
             </div>
             """,
@@ -32,30 +32,30 @@ def render_sidebar(
         if user_email:
             st.markdown(f"**Bruker:** {user_email}")
 
-        st.markdown('<div class="tf-nav-label">Søk</div>', unsafe_allow_html=True)
+        st.markdown('<div class="tf-nav-label">Search</div>', unsafe_allow_html=True)
         st.text_input(
-            "Globalt søk",
+            "Global search",
             label_visibility="collapsed",
-            placeholder="Søk i kunder, tilbud, oppdrag...",
+            placeholder="Search customers, quotes, tasks...",
         )
 
-        st.markdown('<div class="tf-nav-label">Navigasjon</div>', unsafe_allow_html=True)
+        st.markdown('<div class="tf-nav-label">Navigation</div>', unsafe_allow_html=True)
 
         pages = [
             "Dashboard",
-            "Kunder",
-            "Salg",
-            "Drift",
-            "Fakturering",
-            "Kursing",
-            "Innstillinger",
+            "Customers",
+            "Sales",
+            "Operations",
+            "Invoicing",
+            "Courses",
+            "Settings",
         ]
 
         if active_page not in pages:
             active_page = "Dashboard"
 
         selected_page = st.radio(
-            "Arbeidsområde",
+            "Work Area",
             pages,
             index=pages.index(active_page),
             label_visibility="collapsed",
@@ -66,10 +66,10 @@ def render_sidebar(
         st.markdown(
             f"""
             <div class="tf-side-card">
-                <div style="font-weight:800;color:white;">Bedrift</div>
+                <div style="font-weight:800;color:white;">Company</div>
                 <div style="font-size:.86rem;color:#93a4b8;margin-top:.2rem;">{company_name}</div>
                 <div style="margin-top:.7rem;">
-                    <span class="tf-badge tf-badge-success">Admin-tilgang aktiv</span>
+                    <span class="tf-badge tf-badge-success">Admin Access Active</span>
                 </div>
             </div>
             """,
@@ -95,9 +95,9 @@ def render_topbar(
                 <div class="tf-subtitle">{subtitle}</div>
             </div>
             <div style="display:flex;align-items:center;gap:.75rem;">
-                <div class="tf-search-pill">🔎 Søk i kunder, tilbud og oppdrag...</div>
+                <div class="tf-search-pill">Search customers, quotes, tasks...</div>
                 <div class="tf-bell">
-                    🔔
+                    Alert
                     <div class="tf-bell-badge">{notification_count}</div>
                 </div>
             </div>
