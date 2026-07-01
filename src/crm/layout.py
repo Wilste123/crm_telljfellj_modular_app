@@ -69,13 +69,13 @@ def inject_css():
             display: block;
             box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
         }
-        .tf-brand-title {
+        .felt-brand-title {
             font-weight: 800;
             font-size: 1.82rem;
             color: #f8fbff;
             line-height: 1;
         }
-        .tf-brand-sub {
+        .felt-brand-sub {
             font-size: 1rem;
             color: #9db0ce;
             margin-top: .2rem;
@@ -277,7 +277,7 @@ def render_sidebar(user):
     logo_markup = (
         f'<img class="felt-logo-image" src="{logo_src}" alt="FELT logo" />'
         if logo_src
-        else '<div class="tf-logo">TF</div>'
+        else '<div class="tf-logo">F</div>'
     )
 
     with st.sidebar:
@@ -286,8 +286,8 @@ def render_sidebar(user):
             <div class="tf-sidebar-brand">
                 {logo_markup}
                 <div>
-                    <div class="tf-brand-title">FELT</div>
-                    <div class="tf-brand-sub">Kunder. Tilbud. Oppdrag.</div>
+                    <div class="felt-brand-title">FELT</div>
+                    <div class="felt-brand-sub">Kunder. Tilbud. Oppdrag.</div>
                 </div>
             </div>
             """,

@@ -18,7 +18,7 @@ def render_sidebar(
     logo_markup = (
         f'<img class="felt-logo-image" src="{logo_src}" alt="FELT logo" />'
         if logo_src
-        else '<div class="tf-logo">TF</div>'
+        else '<div class="tf-logo">F</div>'
     )
 
     with st.sidebar:
@@ -27,8 +27,8 @@ def render_sidebar(
             <div class="tf-sidebar-brand">
                 {logo_markup}
                 <div>
-                    <div class="tf-brand-title">FELT</div>
-                    <div class="tf-brand-sub">Kunder. Tilbud. Oppdrag.</div>
+                    <div class="felt-brand-title">FELT</div>
+                    <div class="felt-brand-sub">Kunder. Tilbud. Oppdrag.</div>
                 </div>
             </div>
             """,

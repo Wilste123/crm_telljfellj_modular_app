@@ -4,7 +4,8 @@ from base64 import b64encode
 from functools import lru_cache
 from pathlib import Path
 
-ROOT_DIR = Path(__file__).resolve().parents[2]
+PROJECT_ROOT_PARENT_LEVELS = 2
+ROOT_DIR = Path(__file__).resolve().parents[PROJECT_ROOT_PARENT_LEVELS]
 ASSET_DIR = ROOT_DIR / ".streamlit" / "assets"
 FULL_LOGO_PATH = ASSET_DIR / "felt-logo-full.png"
 SQUARE_LOGO_PATH = ASSET_DIR / "felt-logo-square.png"

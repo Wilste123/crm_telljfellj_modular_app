@@ -414,14 +414,14 @@ def apply_style():
             box-shadow: 0 12px 28px rgba(15,23,42,0.24);
         }
 
-        .tf-brand-title {
+        .felt-brand-title {
             color: white;
             font-weight: 900;
             font-size: 1.05rem;
             line-height: 1.1;
         }
 
-        .tf-brand-sub {
+        .felt-brand-sub {
             color: #93a4b8;
             font-size: 0.78rem;
             margin-top: 0.1rem;
