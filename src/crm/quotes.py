@@ -349,9 +349,9 @@ def send_quote_dialog(ctx, quote_row: dict, pdf_bytes: bytes | None):
 def render_quotes_module(ctx):
     return render_quotes_area(
         ctx,
-        ctx.dfs.get("customers_df", pd.DataFrame()),
-        ctx.dfs.get("pricing_df", pd.DataFrame()),
-        ctx.dfs.get("quotes_df", pd.DataFrame()),
+        ctx.dfs["customers_df"],
+        ctx.dfs["pricing_df"],
+        ctx.dfs["quotes_df"],
     )
 
 
