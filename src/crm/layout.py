@@ -236,7 +236,7 @@ def render_header(user: dict):
         <div class="crm-topbar">
             <div>
                 <div class="crm-kicker">Dashboard</div>
-                <h1 class="crm-title">God oversikt, {user_name}</h1>
+                <h1 class="crm-title">Velkommen, {user_name} - testmiljø</h1>
                 <div class="crm-subtitle">Tilbud, oppdrag og varsler samlet i én ryddig flate.</div>
             </div>
             <div class="crm-actions">
