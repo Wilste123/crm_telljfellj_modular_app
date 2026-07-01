@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import streamlit as st
 
+from .branding import FAVICON_PATH
+
 APP_TITLE = "Lokal CRM"
-APP_ICON = "📋"
+APP_ICON = str(FAVICON_PATH) if FAVICON_PATH.exists() else "📋"
 APP_AUTHOR = "William Berg Steffenak - copyright"
 DOC_BUCKET = "crm-files"
 

@@ -5,6 +5,8 @@ Provides reusable UI components for modern SaaS dashboard
 
 import streamlit as st
 
+from crm.branding import SQUARE_LOGO_PATH, asset_data_uri
+
 
 def render_sidebar(
     company_name: str = "Telljfellj",
@@ -12,14 +14,21 @@ def render_sidebar(
     active_page: str = "Dashboard",
 ):
     """Render the professional dark sidebar with navigation"""
+    logo_src = asset_data_uri(SQUARE_LOGO_PATH)
+    logo_markup = (
+        f'<img class="tf-logo-image" src="{logo_src}" alt="FELT logo" />'
+        if logo_src
+        else '<div class="tf-logo">TF</div>'
+    )
+
     with st.sidebar:
         st.markdown(
-            """
+            f"""
             <div class="tf-sidebar-brand">
-                <div class="tf-logo">TF</div>
+                {logo_markup}
                 <div>
-                    <div class="tf-brand-title">Telljfellj CRM</div>
-                    <div class="tf-brand-sub">Modular bedriftsapp</div>
+                    <div class="tf-brand-title">FELT</div>
+                    <div class="tf-brand-sub">Kunder. Tilbud. Oppdrag.</div>
                 </div>
             </div>
             """,

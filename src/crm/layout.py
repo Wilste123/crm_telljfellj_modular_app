@@ -5,6 +5,7 @@ from html import escape
 import streamlit as st
 
 from .auth import logout
+from .branding import SQUARE_LOGO_PATH, asset_data_uri
 from .data import clear_all_caches
 
 
@@ -56,6 +57,17 @@ def inject_css():
             color: #ffffff;
             font-size: 1.5rem;
             font-weight: 900;
+        }
+        .tf-logo-image {
+            width: 56px;
+            height: 56px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.96);
+            padding: 6px;
+            object-fit: contain;
+            box-sizing: border-box;
+            display: block;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
         }
         .tf-brand-title {
             font-weight: 800;
@@ -261,12 +273,18 @@ def render_sidebar(user):
     import streamlit as st
 
     user_email = user.get("email", "") if isinstance(user, dict) else ""
+    logo_src = asset_data_uri(SQUARE_LOGO_PATH)
+    logo_markup = (
+        f'<img class="tf-logo-image" src="{logo_src}" alt="FELT logo" />'
+        if logo_src
+        else '<div class="tf-logo">TF</div>'
+    )
 
     with st.sidebar:
         st.markdown(
-            """
+            f"""
             <div class="tf-sidebar-brand">
-                <div class="tf-logo">TF</div>
+                {logo_markup}
                 <div>
                     <div class="tf-brand-title">FELT</div>
                     <div class="tf-brand-sub">Kunder. Tilbud. Oppdrag.</div>

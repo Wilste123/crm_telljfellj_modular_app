@@ -402,6 +402,18 @@ def apply_style():
             box-shadow: 0 12px 28px rgba(16,185,129,0.24);
         }
 
+        .tf-logo-image {
+            width: 44px;
+            height: 44px;
+            border-radius: 17px;
+            background: rgba(255,255,255,0.96);
+            padding: 5px;
+            object-fit: contain;
+            box-sizing: border-box;
+            display: block;
+            box-shadow: 0 12px 28px rgba(15,23,42,0.24);
+        }
+
         .tf-brand-title {
             color: white;
             font-weight: 900;
