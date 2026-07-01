@@ -26,7 +26,7 @@ from crm.config import APP_ICON, APP_TITLE
 from crm.context import AppContext
 from crm.data import fetch_all_data, prepare_data
 from crm.layout import inject_css, render_header, render_kpis, render_sidebar
-from crm.pages import courses, customers, dashboard, invoicing, operations, sales, settings
+from crm.pages import courses, customers, dashboard, invoicing, leads, operations, sales, settings
 
 st.set_page_config(page_title=APP_TITLE, page_icon=APP_ICON, layout="wide")
 inject_css()
@@ -97,20 +97,14 @@ active_company_role = company_options[selected_company_name]["role"]
 
 
 render_header(user)
-global_search, show_internal_ids = render_sidebar(user)
+area, global_search, show_internal_ids = render_sidebar(user)
 
 # Behold eksisterende funksjonalitet først: hent alt.
 # Neste ytelsessteg er å bytte dette til områdebasert henting.
-data = fetch_all_data(user_id)
+data = fetch_all_data(user_id, active_company_id)
 dfs = prepare_data(data)
 
 render_kpis(dfs["customers_df"], dfs["leads_df"], dfs["projects_df"], dfs["quotes_df"])
-
-area = st.segmented_control(
-    "Arbeidsområde",
-    options=["Dashboard", "Kunder", "Salg", "Drift", "Fakturering", "Kursing", "Innstillinger"],
-    default="Dashboard",
-)
 
 ctx = AppContext(
     client=client,
@@ -130,6 +124,8 @@ elif area == "Kunder":
     customers.render(ctx)
 elif area == "Salg":
     sales.render(ctx)
+elif area == "Leads":
+    leads.render(ctx)
 elif area == "Drift":
     operations.render(ctx)
 elif area == "Fakturering":
