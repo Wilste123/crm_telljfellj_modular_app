@@ -229,7 +229,8 @@ def inject_css():
 
 
 def render_header(user: dict):
-    user_name = escape((user.get("email", "bruker").split("@")[0] or "bruker").replace(".", " ").title())
+    user_name = escape(user.get("email", "bruker").split("@")[0].replace(".", " ").title())
+    notification_count = int(st.session_state.get("notification_count", 0))
     st.markdown(
         f"""
         <div class="crm-topbar">
@@ -240,7 +241,7 @@ def render_header(user: dict):
             </div>
             <div class="crm-actions">
                 <div class="crm-search">🔎 Søk i kunder, tilbud, oppdrag...</div>
-                <div class="crm-bell">🔔<div class="crm-bell-badge">3</div></div>
+                <div class="crm-bell">🔔<div class="crm-bell-badge">{notification_count}</div></div>
             </div>
         </div>
         """,
@@ -251,6 +252,7 @@ def render_header(user: dict):
 def render_sidebar(user: dict):
     with st.sidebar:
         user_email = escape(user.get("email", "-"))
+        company_name = escape(st.session_state.get("active_company_select", "Bedrift"))
         st.markdown(
             """
             <div class="tf-sidebar-brand">
@@ -287,7 +289,7 @@ def render_sidebar(user: dict):
             """
             <div class="tf-company-card">
                 <div style="font-weight:800;font-size:1.35rem;">Bedrift</div>
-                <div style="margin-top:.3rem;color:#a8b9d7;">Telljfellj AS</div>
+                <div style="margin-top:.3rem;color:#a8b9d7;">{company_name}</div>
                 <div class="tf-company-status">Admin-tilgang aktiv</div>
             </div>
             """,
@@ -314,11 +316,15 @@ def render_kpis(customers_df, leads_df, projects_df, quotes_df):
         if accepted_mask is not None and "total_price" in quotes_df.columns:
             accepted_total = float(quotes_df.loc[accepted_mask, "total_price"].fillna(0).sum())
     open_projects = len(projects_df)
-    urgent_open_projects = (
-        int((projects_df["maintenance_status"].astype(str).str.contains("forfalt|snart", case=False, na=False)).sum())
-        if not projects_df.empty and "maintenance_status" in projects_df.columns
-        else 0
-    )
+    projects_needing_attention = 0
+    if not projects_df.empty:
+        if "status" in projects_df.columns:
+            projects_needing_attention = int(
+                projects_df["status"].astype(str).str.contains("haster|urgent|kritisk", case=False, na=False).sum()
+            )
+        elif "ready_for_invoice" in projects_df.columns:
+            projects_needing_attention = int(projects_df["ready_for_invoice"].fillna(False).sum())
+    accepted_total_display = f"{int(accepted_total):,}".replace(",", " ")
     st.markdown(
         f"""
         <div class="crm-kpi-grid">
@@ -329,15 +335,15 @@ def render_kpis(customers_df, leads_df, projects_df, quotes_df):
             </div>
             <div class="crm-kpi">
                 <div class="crm-kpi-label">Akseptert verdi</div>
-                <div class="crm-kpi-value">{int(accepted_total):,} kr</div>
-                <div class="crm-kpi-sub">Siste 30 dager</div>
+                <div class="crm-kpi-value">{accepted_total_display} kr</div>
+                <div class="crm-kpi-sub">Totalt akseptert</div>
             </div>
             <div class="crm-kpi">
                 <div class="crm-kpi-label">Åpne oppdrag</div>
                 <div class="crm-kpi-value">{open_projects}</div>
-                <div class="crm-kpi-sub">{urgent_open_projects} haster</div>
+                <div class="crm-kpi-sub">{projects_needing_attention} haster</div>
             </div>
         </div>
-        """.replace(",", " "),
+        """,
         unsafe_allow_html=True,
     )
