@@ -249,26 +249,24 @@ def render_header(user: dict):
     )
 
 
-def render_sidebar(user: dict, default_area: str = "Dashboard"):
-    module_options = [
-        "Dashboard",
-        "Kunder",
-        "Salg",
-        "Leads",
-        "Drift",
-        "Fakturering",
-        "Kursing",
-        "Innstillinger",
-    ]
-    if default_area not in module_options:
-        default_area = "Dashboard"
+def render_sidebar(user):
+    """
+    Sidebar for hovedappen.
+
+    Viktig:
+    app.py forventer at denne returnerer:
+    area, global_search, show_internal_ids
+    """
+
+    import streamlit as st
+
+    user_email = user.get("email", "") if isinstance(user, dict) else ""
+
     with st.sidebar:
-        user_email = escape(user.get("email", "-"))
-        company_name = escape(st.session_state.get("active_company_select", "Bedrift"))
         st.markdown(
             """
             <div class="tf-sidebar-brand">
-                <div class="tf-logo">🏢</div>
+                <div class="tf-logo">TF</div>
                 <div>
                     <div class="tf-brand-title">Telljfellj CRM</div>
                     <div class="tf-brand-sub">Modulær bedriftsapp</div>
@@ -278,40 +276,65 @@ def render_sidebar(user: dict, default_area: str = "Dashboard"):
             unsafe_allow_html=True,
         )
 
-        selected_area = st.radio(
-            "Arbeidsområde",
-            module_options,
-            index=module_options.index(default_area),
+        if user_email:
+            st.markdown(f"**Bruker:** {user_email}")
+
+        st.markdown('<div class="tf-nav-label">Søk</div>', unsafe_allow_html=True)
+
+        global_search = st.text_input(
+            "Globalt søk",
+            placeholder="Søk i kunder, tilbud, oppdrag...",
+            key="global_search",
+        )
+
+        show_internal_ids = st.toggle(
+            "Vis tekniske ID-er",
+            value=False,
+            key="show_internal_ids",
+        )
+
+        st.markdown('<div class="tf-nav-label">Arbeidsområde</div>', unsafe_allow_html=True)
+
+        areas = [
+            "Dashboard",
+            "Kunder",
+            "Leads",
+            "Salg",
+            "Drift",
+            "Fakturering",
+            "Kursing",
+            "Innstillinger",
+        ]
+
+        area = st.radio(
+            "Velg område",
+            areas,
+            index=0,
+            label_visibility="collapsed",
             key="active_area",
         )
 
-        st.markdown('<div style="height: .6rem;"></div>', unsafe_allow_html=True)
-        st.markdown(f'<div style="color:#8ea2c5;font-size: .9rem;">Innlogget: {user_email}</div>', unsafe_allow_html=True)
-
-        st.markdown('<div style="height: .5rem;"></div>', unsafe_allow_html=True)
-        global_search = st.text_input("Globalt søk", placeholder="Søk i kunder, tilbud, oppdrag...")
-        show_internal_ids = st.toggle("Vis tekniske ID-er", value=False)
-
         st.markdown(
-            f"""
-            <div class="tf-company-card">
-                <div style="font-weight:800;font-size:1.35rem;">Bedrift</div>
-                <div style="margin-top:.3rem;color:#a8b9d7;">{company_name}</div>
-                <div class="tf-company-status">Admin-tilgang aktiv</div>
+            """
+            <div class="tf-side-card">
+                <div style="font-weight:800;color:white;">Status</div>
+                <div style="font-size:.86rem;color:#93a4b8;margin-top:.2rem;">
+                    CRM aktiv
+                </div>
+                <div style="margin-top:.7rem;">
+                    <span class="tf-badge tf-badge-success">Innlogget</span>
+                </div>
             </div>
             """,
             unsafe_allow_html=True,
         )
 
-        if st.button("Oppdater data"):
-            
-            clear_all_caches()
+        if st.button("Oppdater data", use_container_width=True):
             st.rerun()
-        if st.button("Logg ut"):
-            logout()
-            st.rerun()
-    return selected_area, global_search, show_internal_ids
 
+        st.button("Logg ut", use_container_width=True)
+
+    return area, global_search, show_internal_ids
 
 def render_kpis(customers_df, leads_df, projects_df, quotes_df):
     accepted_quotes = 0
