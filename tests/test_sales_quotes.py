@@ -148,6 +148,7 @@ def test_sales_render_creates_kalkyle_and_tilbud_tabs(monkeypatch):
     monkeypatch.setattr(sales, "st", fake_st)
     monkeypatch.setattr(sales, "section_title", lambda *args, **kwargs: None)
     monkeypatch.setattr(sales, "badge_html", lambda *args, **kwargs: "")
+    monkeypatch.setattr(sales, "render_leads_workspace", lambda ctx, show_title=False: None)
     monkeypatch.setattr(
         sales,
         "render_quotes_module",
@@ -167,5 +168,5 @@ def test_sales_render_creates_kalkyle_and_tilbud_tabs(monkeypatch):
 
     sales.render(ctx)
 
-    assert fake_st.tab_labels[0] == ["Kalkyle", "Tilbud"]
+    assert fake_st.tab_labels[0] == ["Kalkyle", "Tilbud", "Leads"]
     assert recorded_namespaces == ["sales:quotes"]

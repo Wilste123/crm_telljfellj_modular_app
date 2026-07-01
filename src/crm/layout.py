@@ -249,7 +249,19 @@ def render_header(user: dict):
     )
 
 
-def render_sidebar(user: dict):
+def render_sidebar(user: dict, default_area: str = "Dashboard"):
+    module_options = [
+        "Dashboard",
+        "Kunder",
+        "Salg",
+        "Leads",
+        "Drift",
+        "Fakturering",
+        "Kursing",
+        "Innstillinger",
+    ]
+    if default_area not in module_options:
+        default_area = "Dashboard"
     with st.sidebar:
         user_email = escape(user.get("email", "-"))
         company_name = escape(st.session_state.get("active_company_select", "Bedrift"))
@@ -266,16 +278,11 @@ def render_sidebar(user: dict):
             unsafe_allow_html=True,
         )
 
-        st.markdown(
-            """
-            <div class="tf-nav-item active"><span>Dashboard</span><span>›</span></div>
-            <div class="tf-nav-item"><span>Kunder</span></div>
-            <div class="tf-nav-item"><span>Tilbud</span></div>
-            <div class="tf-nav-item"><span>Oppdrag</span></div>
-            <div class="tf-nav-item"><span>Utstyr</span></div>
-            <div class="tf-nav-item"><span>Innstillinger</span></div>
-            """,
-            unsafe_allow_html=True,
+        selected_area = st.radio(
+            "Arbeidsområde",
+            module_options,
+            index=module_options.index(default_area),
+            key="active_area",
         )
 
         st.markdown('<div style="height: .6rem;"></div>', unsafe_allow_html=True)
@@ -286,7 +293,7 @@ def render_sidebar(user: dict):
         show_internal_ids = st.toggle("Vis tekniske ID-er", value=False)
 
         st.markdown(
-            """
+            f"""
             <div class="tf-company-card">
                 <div style="font-weight:800;font-size:1.35rem;">Bedrift</div>
                 <div style="margin-top:.3rem;color:#a8b9d7;">{company_name}</div>
@@ -303,7 +310,7 @@ def render_sidebar(user: dict):
         if st.button("Logg ut"):
             logout()
             st.rerun()
-    return global_search, show_internal_ids
+    return selected_area, global_search, show_internal_ids
 
 
 def render_kpis(customers_df, leads_df, projects_df, quotes_df):

@@ -25,6 +25,7 @@ crm_telljfellj_modular_app/
 │       ├── dashboard.py
 │       ├── customers.py
 │       ├── sales.py
+│       ├── leads.py
 │       ├── operations.py
 │       ├── invoicing.py
 │       └── courses.py

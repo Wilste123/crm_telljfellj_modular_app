@@ -8,9 +8,17 @@ from .utils import as_df, safe_number
 
 
 @st.cache_data(ttl=60, max_entries=200, show_spinner=False)
-def fetch_table(_cache_key: str, table_name: str, order_by: str | None = None, ascending: bool = True):
+def fetch_table(
+    _cache_key: str,
+    table_name: str,
+    order_by: str | None = None,
+    ascending: bool = True,
+    company_id: str | None = None,
+):
     client = get_client_with_session()
     query = client.table(table_name).select("*")
+    if company_id:
+        query = query.eq("company_id", company_id)
     if order_by:
         query = query.order(order_by, desc=not ascending)
     result = query.execute()
@@ -21,19 +29,26 @@ def clear_all_caches():
     fetch_table.clear()
 
 
-def fetch_all_data(user_id: str):
+def make_cache_key(user_id: str, company_id: str | None = None) -> str:
+    if company_id:
+        return f"{user_id}:{company_id}"
+    return user_id
+
+
+def fetch_all_data(user_id: str, company_id: str | None = None):
+    cache_key = make_cache_key(user_id, company_id)
     return {
-        "customers": fetch_table(user_id, "customers", "created_at", ascending=False),
-        "leads": fetch_table(user_id, "leads", "created_at", ascending=False),
-        "projects": fetch_table(user_id, "projects", "created_at", ascending=False),
-        "pricing": fetch_table(user_id, "pricing_calculations", "created_at", ascending=False),
-        "quotes": fetch_table(user_id, "quotes", "created_at", ascending=False),
-        "project_logs": fetch_table(user_id, "project_logs", "created_at", ascending=False),
-        "equipment": fetch_table(user_id, "equipment", "created_at", ascending=False),
-        "courses": fetch_table(user_id, "courses", "created_at", ascending=False),
-        "project_log_equipment": fetch_table(user_id, "project_log_equipment", "created_at", ascending=False),
-        "equipment_service_logs": fetch_table(user_id, "equipment_service_logs", "service_date", ascending=False),
-        "documents": fetch_table(user_id, "documents", "uploaded_at", ascending=False),
+        "customers": fetch_table(cache_key, "customers", "created_at", ascending=False, company_id=company_id),
+        "leads": fetch_table(cache_key, "leads", "created_at", ascending=False, company_id=company_id),
+        "projects": fetch_table(cache_key, "projects", "created_at", ascending=False, company_id=company_id),
+        "pricing": fetch_table(cache_key, "pricing_calculations", "created_at", ascending=False, company_id=company_id),
+        "quotes": fetch_table(cache_key, "quotes", "created_at", ascending=False, company_id=company_id),
+        "project_logs": fetch_table(cache_key, "project_logs", "created_at", ascending=False, company_id=company_id),
+        "equipment": fetch_table(cache_key, "equipment", "created_at", ascending=False, company_id=company_id),
+        "courses": fetch_table(cache_key, "courses", "created_at", ascending=False, company_id=company_id),
+        "project_log_equipment": fetch_table(cache_key, "project_log_equipment", "created_at", ascending=False, company_id=company_id),
+        "equipment_service_logs": fetch_table(cache_key, "equipment_service_logs", "service_date", ascending=False, company_id=company_id),
+        "documents": fetch_table(cache_key, "documents", "uploaded_at", ascending=False, company_id=company_id),
     }
 
 def fetch_user_companies(user_id: str):
