@@ -268,8 +268,8 @@ def render_sidebar(user):
             <div class="tf-sidebar-brand">
                 <div class="tf-logo">TF</div>
                 <div>
-                    <div class="tf-brand-title">Telljfellj CRM</div>
-                    <div class="tf-brand-sub">Modulær bedriftsapp</div>
+                    <div class="tf-brand-title">FELT</div>
+                    <div class="tf-brand-sub">Kunder. Tilbud. Oppdrag.</div>
                 </div>
             </div>
             """,
