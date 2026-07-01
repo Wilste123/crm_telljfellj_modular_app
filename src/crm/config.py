@@ -9,6 +9,9 @@ APP_ICON = str(FAVICON_PATH) if FAVICON_PATH.exists() else "📋"
 APP_AUTHOR = "William Berg Steffenak - copyright"
 DOC_BUCKET = "crm-files"
 
+# Quote status constants
+STATUS_ACCEPTED = "akseptert"
+
 
 def get_supabase_url() -> str:
     return st.secrets["SUPABASE_URL"]

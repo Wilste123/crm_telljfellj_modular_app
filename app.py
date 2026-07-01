@@ -22,7 +22,7 @@ from crm.public_quote import render_public_quote_accept_page
 import streamlit as st
 
 from crm.auth import current_user, get_client_with_session, render_login_screen
-from crm.config import APP_ICON, APP_TITLE
+from crm.config import APP_ICON, APP_TITLE, STATUS_ACCEPTED
 from crm.context import AppContext
 from crm.data import fetch_all_data, fetch_user_companies, prepare_data
 from crm.layout import inject_css, render_header, render_kpis, render_sidebar
@@ -76,7 +76,7 @@ dfs = prepare_data(data)
 _quotes_df = dfs.get("quotes_df")
 if _quotes_df is not None and not _quotes_df.empty and "status" in _quotes_df.columns:
     st.session_state["notification_count"] = int(
-        _quotes_df["status"].astype(str).str.lower().eq("akseptert").sum()
+        _quotes_df["status"].astype(str).str.lower().eq(STATUS_ACCEPTED).sum()
     )
 else:
     st.session_state["notification_count"] = 0

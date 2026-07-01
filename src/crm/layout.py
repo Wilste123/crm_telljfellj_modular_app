@@ -6,6 +6,7 @@ import streamlit as st
 
 from .auth import logout
 from .branding import SQUARE_LOGO_PATH, asset_data_uri
+from .config import dev_mode
 from .data import clear_all_caches
 
 
@@ -218,12 +219,13 @@ def render_header(user: dict):
     notification_count = int(st.session_state.get("notification_count", 0))
     area = escape(st.session_state.get("active_area", "FELT CRM"))
     badge_display = "" if notification_count == 0 else str(notification_count)
+    env_suffix = escape(" – testmiljø") if dev_mode() else ""
     st.markdown(
         f"""
         <div class="crm-topbar">
             <div>
                 <div class="crm-kicker">{area}</div>
-                <h1 class="crm-title">Velkommen, {user_name}</h1>
+                <h1 class="crm-title">Velkommen, {user_name}{env_suffix}</h1>
                 <div class="crm-subtitle">Tilbud, oppdrag og varsler samlet i én ryddig flate.</div>
             </div>
             <div class="crm-actions">
