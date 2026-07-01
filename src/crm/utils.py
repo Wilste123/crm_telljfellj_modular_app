@@ -36,6 +36,11 @@ def short_id(value: str | None) -> str:
     return str(value)[:8]
 
 
+def scoped_key(namespace: str, key: str) -> str:
+    parts = [str(part).strip(":") for part in (namespace, key) if str(part).strip(":")]
+    return ":".join(parts)
+
+
 def filter_df(df: pd.DataFrame, search: str, columns: list[str] | None = None) -> pd.DataFrame:
     if df.empty or not search or not search.strip():
         return df

@@ -1,34 +1,62 @@
 import streamlit as st
 
-from crm.data import clear_all_caches
 from crm.quotes import render_quotes_module
-from crm.utils import display_df, filter_df, short_id
+from crm.utils import display_df, filter_df, scoped_key
 from crm.ui.layout import section_title, badge_html
 
 
-def render(ctx):
+def render_kalkyle_submodule(ctx):
+    pricing_df = ctx.dfs["pricing_df"]
+
+    st.markdown("### 📐 Kalkyler")
+
+    if pricing_df.empty:
+        st.info("Ingen kalkyler registrert.")
+        return
+
+    search = st.text_input(
+        "🔎 Søk i kalkyler",
+        placeholder="Kunde, kalkyle, notat...",
+        key=scoped_key("sales:kalkyle", "search"),
+    )
+    view = filter_df(pricing_df, ctx.global_search, ["customer_name", "job_type", "note"])
+    view = filter_df(view, search, ["customer_name", "job_type", "note"])
+
+    cols_to_show = [
+        c
+        for c in ["customer_name", "job_type", "calculated_price", "note", "created_at"]
+        if c in view.columns
+    ]
+
+    st.dataframe(
+        display_df(view[cols_to_show], ctx.show_internal_ids),
+        use_container_width=True,
+        hide_index=True,
+    )
+
+
+def render_tilbud_submodule(ctx):
     quotes_df = ctx.dfs["quotes_df"]
-    projects_df = ctx.dfs["projects_df"]
-    customers_df = ctx.dfs["customers_df"]
-    
-    section_title("Salg", "Tilbud og salgsprosess")
-    
+
     left, right = st.columns([1.05, 0.95])
-    
+
     with left:
-        search = st.text_input("🔎 Søk i tilbud", placeholder="Kunde, tilbudsnummer...")
+        search = st.text_input(
+            "🔎 Søk i tilbud",
+            placeholder="Kunde, tilbudsnummer...",
+            key=scoped_key("sales:quotes", "search"),
+        )
         view = filter_df(quotes_df, ctx.global_search, ["customer_name", "quote_number", "status", "note"])
         view = filter_df(view, search, ["customer_name", "quote_number", "status", "note"])
-        
+
         st.markdown("### 💼 Tilbudsliste")
         if view.empty:
             st.info("Ingen tilbud registrert.")
         else:
-            cols = st.columns(1)
-            for idx, (_, row) in enumerate(view.iterrows()):
+            for _, row in view.iterrows():
                 status = row.get('status', 'Utkast')
                 status_variant = "success" if status == "Akseptert" else "warning" if status == "Sendt" else "neutral"
-                
+
                 st.markdown(
                     f"""
                     <div class="tf-list-card" style="margin-bottom: 0.75rem;">
@@ -45,49 +73,27 @@ def render(ctx):
                     """,
                     unsafe_allow_html=True
                 )
-            
+
             with st.expander("📊 Vis tilbudstabell"):
                 cols_to_show = [c for c in ["customer_name", "quote_number", "created_at", "status", "total_price"] if c in view.columns]
                 st.dataframe(display_df(view[cols_to_show], ctx.show_internal_ids), use_container_width=True, hide_index=True)
-    
+
     with right:
-        st.markdown("### ➕ Nytt tilbud")
-        
-        customer_options = {
-            f"{row.get('name', 'Ukjent')} • {short_id(row['id'])}": row['id']
-            for _, row in customers_df.iterrows()
-        } if not customers_df.empty else {}
-        
-        if customer_options:
-            selected_customer = st.selectbox("Velg kunde", list(customer_options.keys()))
-            selected_customer_id = customer_options[selected_customer]
-            
-            with st.form("new_quote_form", clear_on_submit=True):
-                quote_number = st.text_input("Tilbudsnummer", placeholder="F.eks. TLF-001-2026")
-                total_price = st.number_input("Totalbeløp", min_value=0.0, step=100.0)
-                description = st.text_area("Tilbudsbeskrivelse", placeholder="Detaljert beskrivelse av tilbudet...")
-                
-                submitted = st.form_submit_button("✅ Opprett tilbud", use_container_width=True)
-                if submitted:
-                    if not quote_number.strip():
-                        st.warning("Tilbudsnummer må fylles ut.")
-                    else:
-                        ctx.client.table("quotes").insert({
-                            "user_id": ctx.user_id,
-                            "company_id": ctx.company_id,
-                            "customer_id": selected_customer_id,
-                            "customer_name": selected_customer.split(" • ")[0],
-                            "quote_number": quote_number.strip(),
-                            "total_price": total_price,
-                            "description": description.strip() or None,
-                            "status": "Utkast",
-                        }).execute()
-                        clear_all_caches()
-                        st.success("✅ Tilbud opprettet.")
-                        st.rerun()
-        else:
-            st.info("📌 Opprett minst en kunde før du kan lage tilbud.")
-        
-        st.markdown("---")
         st.markdown("### 📋 Tilbudsadministrasjon")
-        render_quotes_module(ctx)
+        render_quotes_module(ctx, key_namespace="sales:quotes")
+
+
+SALES_SUBMODULES = (
+    ("Kalkyle", render_kalkyle_submodule),
+    ("Tilbud", render_tilbud_submodule),
+)
+
+
+def render(ctx):
+    section_title("Salg", "Tilbud og salgsprosess")
+
+    tabs = st.tabs([label for label, _ in SALES_SUBMODULES])
+
+    for tab, (_, renderer) in zip(tabs, SALES_SUBMODULES):
+        with tab:
+            renderer(ctx)

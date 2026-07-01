@@ -14,7 +14,7 @@ from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, Tabl
 
 from crm.config import DOC_BUCKET
 from crm.data import clear_all_caches
-from crm.utils import display_df, format_currency, safe_number, short_id
+from crm.utils import display_df, format_currency, safe_number, scoped_key, short_id
 
 
 AUTHOR_NAME = "William Berg Steffenak"
@@ -225,10 +225,16 @@ def ensure_quote_public_token(ctx, quote_row: dict) -> str:
 # =========================================================
 
 @st.dialog("Send tilbud", width="large")
-def send_quote_dialog(ctx, quote_row: dict, pdf_bytes: bytes | None):
+def send_quote_dialog(
+    ctx,
+    quote_row: dict,
+    pdf_bytes: bytes | None,
+    key_namespace: str = "quotes",
+):
     customer_name = quote_row.get("customer_name", "-")
     customer_email = quote_row.get("customer_email") or ""
     customer_phone = quote_row.get("customer_phone") or ""
+    dialog_key = lambda key: scoped_key(key_namespace, key)
 
     quote_number = quote_row.get("quote_number", "-")
     title = quote_row.get("title") or quote_row.get("job_type") or "Tilbud"
@@ -245,13 +251,13 @@ def send_quote_dialog(ctx, quote_row: dict, pdf_bytes: bytes | None):
     to_email = st.text_input(
         "Til",
         value=customer_email,
-        key=f"email_to_{quote_row['id']}",
+        key=dialog_key(f"email_to_{quote_row['id']}"),
     )
 
     subject = st.text_input(
         "Emne",
         value=f"Tilbud {quote_number} - {title}",
-        key=f"email_subject_{quote_row['id']}",
+        key=dialog_key(f"email_subject_{quote_row['id']}"),
     )
 
     default_body = build_email_body(
@@ -265,7 +271,7 @@ def send_quote_dialog(ctx, quote_row: dict, pdf_bytes: bytes | None):
         "E-posttekst",
         value=default_body,
         height=230,
-        key=f"email_body_{quote_row['id']}",
+        key=dialog_key(f"email_body_{quote_row['id']}"),
     )
 
     if pdf_bytes:
@@ -274,7 +280,7 @@ def send_quote_dialog(ctx, quote_row: dict, pdf_bytes: bytes | None):
             data=pdf_bytes,
             file_name=f"{quote_number}.pdf",
             mime="application/pdf",
-            key=f"download_quote_attachment_{quote_row['id']}",
+            key=dialog_key(f"download_quote_attachment_{quote_row['id']}"),
         )
         st.caption("Last ned PDF-en og legg den ved i e-posten som åpnes.")
     else:
@@ -293,7 +299,7 @@ def send_quote_dialog(ctx, quote_row: dict, pdf_bytes: bytes | None):
     sms_to = st.text_input(
         "Mobilnummer",
         value=customer_phone,
-        key=f"sms_to_{quote_row['id']}",
+        key=dialog_key(f"sms_to_{quote_row['id']}"),
     )
 
     default_sms = build_sms_body(
@@ -307,7 +313,7 @@ def send_quote_dialog(ctx, quote_row: dict, pdf_bytes: bytes | None):
         "SMS-tekst",
         value=default_sms,
         height=140,
-        key=f"sms_body_{quote_row['id']}",
+        key=dialog_key(f"sms_body_{quote_row['id']}"),
     )
 
     if sms_to:
@@ -326,7 +332,7 @@ def send_quote_dialog(ctx, quote_row: dict, pdf_bytes: bytes | None):
     col1, col2 = st.columns(2)
 
     with col1:
-        if st.button("Marker som sendt", key=f"mark_sent_dialog_{quote_row['id']}"):
+        if st.button("Marker som sendt", key=dialog_key(f"mark_sent_dialog_{quote_row['id']}")):
             ctx.client.table("quotes").update({
                 "status": "Sendt",
                 "sent_at": datetime.now().isoformat(),
@@ -338,7 +344,7 @@ def send_quote_dialog(ctx, quote_row: dict, pdf_bytes: bytes | None):
             st.rerun()
 
     with col2:
-        if st.button("Lukk", key=f"close_send_dialog_{quote_row['id']}"):
+        if st.button("Lukk", key=dialog_key(f"close_send_dialog_{quote_row['id']}")):
             st.rerun()
 
 
@@ -346,12 +352,13 @@ def send_quote_dialog(ctx, quote_row: dict, pdf_bytes: bytes | None):
 # MAIN RENDER
 # =========================================================
 
-def render_quotes_module(ctx):
+def render_quotes_module(ctx, key_namespace: str = "quotes"):
     return render_quotes_area(
         ctx,
         ctx.dfs["customers_df"],
         ctx.dfs["pricing_df"],
         ctx.dfs["quotes_df"],
+        key_namespace=key_namespace,
     )
 
 
@@ -360,8 +367,10 @@ def render_quotes_area(
     customers_df: pd.DataFrame,
     pricing_df: pd.DataFrame,
     quotes_df: pd.DataFrame,
+    key_namespace: str = "quotes",
 ):
     st.markdown("### Tilbud")
+    quote_key = lambda key: scoped_key(key_namespace, key)
 
     tab_new, tab_existing = st.tabs(["Nytt tilbud", "Eksisterende tilbud"])
 
@@ -390,11 +399,11 @@ def render_quotes_area(
                 )
                 pricing_options[label] = row
 
-        with st.form("new_quote_form", clear_on_submit=False):
+        with st.form(quote_key("new_quote_form"), clear_on_submit=False):
             customer_label = st.selectbox(
                 "Kunde",
                 list(customer_options.keys()),
-                key="quote_customer_select",
+                key=quote_key("quote_customer_select"),
             )
 
             selected_customer = customer_options[customer_label]
@@ -402,7 +411,7 @@ def render_quotes_area(
             pricing_label = st.selectbox(
                 "Kalkyle (valgfri)",
                 ["Ingen"] + list(pricing_options.keys()),
-                key="quote_pricing_select",
+                key=quote_key("quote_pricing_select"),
             )
 
             selected_pricing = None
@@ -422,14 +431,14 @@ def render_quotes_area(
             title = st.text_input(
                 "Tittel",
                 value=default_title,
-                key="quote_title_input",
+                key=quote_key("quote_title_input"),
             )
 
             description = st.text_area(
                 "Beskrivelse",
                 value=default_description,
                 height=140,
-                key="quote_description_input",
+                key=quote_key("quote_description_input"),
             )
 
             col1, col2, col3 = st.columns(3)
@@ -440,7 +449,7 @@ def render_quotes_area(
                     min_value=0.0,
                     value=float(default_amount),
                     step=500.0,
-                    key="quote_amount_input",
+                    key=quote_key("quote_amount_input"),
                 )
 
             with col2:
@@ -449,14 +458,14 @@ def render_quotes_area(
                     min_value=0.0,
                     value=25.0,
                     step=1.0,
-                    key="quote_vat_rate_input",
+                    key=quote_key("quote_vat_rate_input"),
                 )
 
             with col3:
                 valid_until = st.date_input(
                     "Gyldig til",
                     value=date.today(),
-                    key="quote_valid_until_input",
+                    key=quote_key("quote_valid_until_input"),
                 )
 
             vat_amount = float(amount) * float(vat_rate) / 100
@@ -622,7 +631,7 @@ def render_quotes_area(
         selected_quote_label = st.selectbox(
             "Velg tilbud",
             list(quote_options.keys()),
-            key="existing_quote_select",
+            key=quote_key("existing_quote_select"),
         )
 
         selected_quote = quote_options[selected_quote_label]
@@ -646,17 +655,22 @@ def render_quotes_area(
                     data=pdf_bytes,
                     file_name=f"{selected_quote.get('quote_number', 'tilbud')}.pdf",
                     mime="application/pdf",
-                    key=f"quote_download_{selected_quote['id']}",
+                    key=quote_key(f"quote_download_{selected_quote['id']}"),
                 )
             else:
                 st.caption("PDF mangler")
 
         with col2:
-            if st.button("Send e-post/SMS", key=f"quote_send_{selected_quote['id']}"):
-                send_quote_dialog(ctx, selected_quote, pdf_bytes)
+            if st.button("Send e-post/SMS", key=quote_key(f"quote_send_{selected_quote['id']}")):
+                send_quote_dialog(
+                    ctx,
+                    selected_quote,
+                    pdf_bytes,
+                    key_namespace=quote_key("send_dialog"),
+                )
 
         with col3:
-            if st.button("Marker som sendt", key=f"quote_mark_sent_{selected_quote['id']}"):
+            if st.button("Marker som sendt", key=quote_key(f"quote_mark_sent_{selected_quote['id']}")):
                 ctx.client.table("quotes").update({
                     "status": "Sendt",
                     "sent_at": datetime.now().isoformat(),
@@ -672,7 +686,7 @@ def render_quotes_area(
             public_token = selected_quote.get("public_token")
 
             if not public_token:
-                if st.button("Lag godkjenningslenke", key=f"quote_create_link_{selected_quote['id']}"):
+                if st.button("Lag godkjenningslenke", key=quote_key(f"quote_create_link_{selected_quote['id']}")):
                     token = ensure_quote_public_token(ctx, selected_quote)
                     st.success("Godkjenningslenke opprettet.")
                     st.code(build_accept_link(token))
