@@ -19,7 +19,9 @@ def render(ctx):
         else:
             cols = [c for c in ["customer_name", "quote_number", "status", "total_price", "created_at"] if c in quotes_view.columns]
             st.dataframe(display_df(quotes_view[cols].head(8), ctx.show_internal_ids), use_container_width=True, hide_index=True)
-            st.button("Nytt tilbud", use_container_width=False, key="dashboard_new_quote")
+            if st.button("Nytt tilbud →", use_container_width=False, key="dashboard_new_quote"):
+                st.session_state["active_area"] = "Salg"
+                st.rerun()
 
         st.markdown("### 📋 Nyeste aktivitet")
         dashboard_logs = filter_df(project_logs_df, ctx.global_search, ["project_label", "task", "performed_by", "note"])

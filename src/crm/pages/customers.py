@@ -135,19 +135,23 @@ def render(ctx):
                     if not name.strip():
                         st.warning("Navn må fylles ut.")
                     else:
-                        ctx.client.table("customers").insert({
-                            "user_id": ctx.user_id,
-                            "company_id": ctx.company_id,
-                            "name": name.strip(),
-                            "phone": phone.strip() or None,
-                            "email": email.strip() or None,
-                            "address": address.strip() or None,
-                            "customer_type": customer_type,
-                            "note": note.strip() or None,
-                        }).execute()
-                        clear_all_caches()
-                        st.success("✅ Kunde lagret.")
-                        st.rerun()
+                        try:
+                            ctx.client.table("customers").insert({
+                                "user_id": ctx.user_id,
+                                "company_id": ctx.company_id,
+                                "name": name.strip(),
+                                "phone": phone.strip() or None,
+                                "email": email.strip() or None,
+                                "address": address.strip() or None,
+                                "customer_type": customer_type,
+                                "note": note.strip() or None,
+                            }).execute()
+                        except Exception as err:
+                            st.error(f"Kunne ikke lagre kunde: {err}")
+                        else:
+                            clear_all_caches()
+                            st.success("✅ Kunde lagret.")
+                            st.rerun()
 
         divider()
         st.markdown("### 📄 Dokumenter")

@@ -59,7 +59,7 @@ def render(ctx):
         divider()
         st.markdown("### ✏️ Oppdater fakturastatus")
         with st.form("invoice_update_form"):
-            ready_for_invoice = st.checkbox("✅ Klar for fakturering", value=bool(selected.get("ready_for_invoice", True)))
+            ready_for_invoice = st.checkbox("✅ Klar for fakturering", value=bool(selected.get("ready_for_invoice", False)))
             invoiced = st.checkbox("✅ Fakturert", value=bool(selected.get("invoiced", False)))
             invoice_number = st.text_input("Fakturanummer", value=selected.get("invoice_number") or "", placeholder="F.eks. FAK-001-2026")
             invoice_note = st.text_area("Notat", placeholder="Tilleggsinformasjon...")
