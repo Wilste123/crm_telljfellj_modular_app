@@ -1,0 +1,6 @@
+Metadata-Version: 2.4
+Name: crm-telljfellj
+Version: 0.2.0
+Summary: Modular Streamlit CRM
+Author: William Berg Steffenak
+Requires-Python: >=3.10
