@@ -5,6 +5,7 @@ from html import escape
 import streamlit as st
 
 from .auth import logout
+from .branding import SQUARE_LOGO_PATH, asset_data_uri
 from .data import clear_all_caches
 
 
@@ -57,13 +58,24 @@ def inject_css():
             font-size: 1.5rem;
             font-weight: 900;
         }
-        .tf-brand-title {
+        .felt-logo-image {
+            width: 56px;
+            height: 56px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.96);
+            padding: 6px;
+            object-fit: contain;
+            box-sizing: border-box;
+            display: block;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
+        }
+        .felt-brand-title {
             font-weight: 800;
             font-size: 1.82rem;
             color: #f8fbff;
             line-height: 1;
         }
-        .tf-brand-sub {
+        .felt-brand-sub {
             font-size: 1rem;
             color: #9db0ce;
             margin-top: .2rem;
@@ -261,15 +273,21 @@ def render_sidebar(user):
     import streamlit as st
 
     user_email = user.get("email", "") if isinstance(user, dict) else ""
+    logo_src = asset_data_uri(SQUARE_LOGO_PATH)
+    logo_markup = (
+        f'<img class="felt-logo-image" src="{logo_src}" alt="FELT logo" />'
+        if logo_src
+        else '<div class="tf-logo">F</div>'
+    )
 
     with st.sidebar:
         st.markdown(
-            """
+            f"""
             <div class="tf-sidebar-brand">
-                <div class="tf-logo">TF</div>
+                {logo_markup}
                 <div>
-                    <div class="tf-brand-title">FELT</div>
-                    <div class="tf-brand-sub">Kunder. Tilbud. Oppdrag.</div>
+                    <div class="felt-brand-title">FELT</div>
+                    <div class="felt-brand-sub">Kunder. Tilbud. Oppdrag.</div>
                 </div>
             </div>
             """,
