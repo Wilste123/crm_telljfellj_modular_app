@@ -47,72 +47,39 @@ def inject_css():
             margin-bottom: 1.1rem;
         }
         .tf-logo {
-            width: 56px;
-            height: 56px;
-            border-radius: 18px;
+            width: 48px;
+            height: 48px;
+            border-radius: 17px;
             background: linear-gradient(135deg, #09bb7c, #00d4a0);
             display: flex;
             align-items: center;
             justify-content: center;
             color: #ffffff;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 900;
+            box-shadow: 0 12px 28px rgba(9,187,124,0.25);
         }
         .felt-logo-image {
-            width: 56px;
-            height: 56px;
-            border-radius: 18px;
+            width: 48px;
+            height: 48px;
+            border-radius: 17px;
             background: rgba(255, 255, 255, 0.96);
-            padding: 6px;
+            padding: 5px;
             object-fit: contain;
             box-sizing: border-box;
             display: block;
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
         }
         .felt-brand-title {
-            font-weight: 800;
-            font-size: 1.82rem;
+            font-weight: 900;
+            font-size: 1.08rem;
             color: #f8fbff;
-            line-height: 1;
+            line-height: 1.1;
         }
         .felt-brand-sub {
-            font-size: 1rem;
+            font-size: .8rem;
             color: #9db0ce;
-            margin-top: .2rem;
-        }
-        .tf-nav-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: .9rem 1rem;
-            border-radius: 20px;
-            margin-bottom: .6rem;
-            border: 1px solid transparent;
-            background: transparent;
-            color: #dce6f9;
-            font-size: 1.45rem;
-            font-weight: 650;
-        }
-        .tf-nav-item.active {
-            background: #ffffff;
-            color: #0f172a;
-            border-color: #ffffff;
-        }
-        .tf-company-card {
-            margin-top: 1.3rem;
-            background: rgba(19, 33, 71, 0.78);
-            border: 1px solid rgba(146, 166, 205, 0.25);
-            border-radius: 24px;
-            padding: 1rem;
-        }
-        .tf-company-status {
-            display: inline-flex;
-            border-radius: 14px;
-            padding: .45rem .7rem;
-            margin-top: .8rem;
-            color: #6ff2ca;
-            background: rgba(3, 90, 87, 0.6);
-            border: 1px solid rgba(31, 183, 168, .45);
+            margin-top: .1rem;
         }
         .crm-topbar {
             display: flex;
@@ -121,11 +88,11 @@ def inject_css():
             margin-bottom: 1.2rem;
         }
         .crm-kicker {
-            letter-spacing: .36em;
+            letter-spacing: .22em;
             text-transform: uppercase;
-            color: #0b9967;
+            color: #047857;
             font-weight: 900;
-            font-size: .95rem;
+            font-size: .78rem;
             margin-bottom: .2rem;
         }
         .crm-title {
@@ -137,7 +104,7 @@ def inject_css():
         }
         .crm-subtitle {
             margin-top: .65rem;
-            font-size: 2rem;
+            font-size: 1.15rem;
             color: #5f7593;
             font-weight: 500;
         }
@@ -153,11 +120,11 @@ def inject_css():
             color: #8ea0ba;
             font-size: 1.08rem;
             padding: .75rem 1rem;
-            min-width: 360px;
+            min-width: 320px;
         }
         .crm-bell {
-            width: 56px;
-            height: 56px;
+            width: 52px;
+            height: 52px;
             border-radius: 18px;
             border: 1px solid var(--crm-border);
             background: #ffffff;
@@ -172,15 +139,16 @@ def inject_css():
             position: absolute;
             top: -6px;
             right: -6px;
-            width: 28px;
-            height: 28px;
+            min-width: 24px;
+            height: 24px;
             border-radius: 999px;
             background: #09bb7c;
             color: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: .83rem;
+            padding: 0 5px;
+            font-size: .78rem;
             font-weight: 800;
             border: 2px solid #ffffff;
         }
@@ -193,45 +161,50 @@ def inject_css():
         .crm-kpi {
             background: var(--crm-card);
             border: 1px solid var(--crm-border);
-            border-radius: 30px;
+            border-radius: 28px;
             padding: 1.35rem 1.45rem;
-            box-shadow: 8px 8px 0 rgba(15,23,42,0.08);
+            box-shadow: 6px 6px 0 rgba(15,23,42,0.07);
         }
         .crm-kpi-label {
-            color: #5f7593;
-            font-weight: 560;
-            font-size: 1.95rem;
-            margin-bottom: .65rem;
+            color: #475569;
+            font-weight: 600;
+            font-size: .95rem;
+            margin-bottom: .55rem;
         }
         .crm-kpi-value {
-            font-size: 3.15rem;
+            font-size: 2.6rem;
             letter-spacing: -.04em;
             font-weight: 880;
             color: #0f1733;
         }
         .crm-kpi-sub {
             display: inline-flex;
-            margin-top: .65rem;
-            padding: .35rem .65rem;
+            margin-top: .6rem;
+            padding: .3rem .6rem;
             border-radius: 999px;
             background: var(--crm-accent-soft);
-            color: #007453;
+            color: #047857;
             font-weight: 700;
-            font-size: 1.03rem;
+            font-size: .88rem;
         }
         div[data-testid="stDataFrame"], div[data-testid="stTable"] {
             background: #ffffff;
             border: 1px solid var(--crm-border);
-            border-radius: 28px;
+            border-radius: 22px;
             overflow: hidden;
         }
         .block-container hr {
             border-color: #d7e0ea;
         }
+        .tf-section-head {
+            margin-bottom: 1.2rem;
+            padding-bottom: .75rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
         @media (max-width: 1200px) {
-            .crm-title { font-size: 2.4rem; }
-            .crm-subtitle { font-size: 1.24rem; }
-            .crm-search { min-width: 220px; }
+            .crm-title { font-size: 2.2rem; }
+            .crm-subtitle { font-size: 1rem; }
+            .crm-search { min-width: 200px; }
             .crm-kpi-grid { grid-template-columns: 1fr; }
         }
         </style>
@@ -243,17 +216,19 @@ def inject_css():
 def render_header(user: dict):
     user_name = escape(user.get("email", "bruker").split("@")[0].replace(".", " ").title())
     notification_count = int(st.session_state.get("notification_count", 0))
+    area = escape(st.session_state.get("active_area", "FELT CRM"))
+    badge_display = "" if notification_count == 0 else str(notification_count)
     st.markdown(
         f"""
         <div class="crm-topbar">
             <div>
-                <div class="crm-kicker">Dashboard</div>
-                <h1 class="crm-title">Velkommen, {user_name} - testmiljø</h1>
+                <div class="crm-kicker">{area}</div>
+                <h1 class="crm-title">Velkommen, {user_name}</h1>
                 <div class="crm-subtitle">Tilbud, oppdrag og varsler samlet i én ryddig flate.</div>
             </div>
             <div class="crm-actions">
                 <div class="crm-search">🔎 Søk i kunder, tilbud, oppdrag...</div>
-                <div class="crm-bell">🔔<div class="crm-bell-badge">{notification_count}</div></div>
+                <div class="crm-bell">🔔<div class="crm-bell-badge">{badge_display}</div></div>
             </div>
         </div>
         """,
@@ -348,9 +323,12 @@ def render_sidebar(user):
         )
 
         if st.button("Oppdater data", use_container_width=True):
+            clear_all_caches()
             st.rerun()
 
-        st.button("Logg ut", use_container_width=True)
+        if st.button("Logg ut", use_container_width=True):
+            logout()
+            st.rerun()
 
     return area, global_search, show_internal_ids
 
