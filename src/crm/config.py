@@ -13,6 +13,15 @@ DOC_BUCKET = "crm-files"
 STATUS_ACCEPTED = "akseptert"
 
 
+def to_bool(v):
+    return str(v).strip().lower() in {"1", "true", "yes", "on"}
+
+raw_dev_mode = st.secrets.get("DEV_MODE", False)
+DEV_MODE = to_bool(raw_dev_mode)
+
+st.write(f"DEBUG DEV_MODE raw={raw_dev_mode!r} parsed={DEV_MODE}")
+
+
 def get_supabase_url() -> str:
     return st.secrets["SUPABASE_URL"]
 
